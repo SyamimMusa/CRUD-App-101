@@ -1,29 +1,8 @@
-const { post } = require("../routes/home");
 
-const fs = require("fs").promises;  
+const fs = require("fs").promises;
+const { connection } = require("../config/db.js");
 
-const connection = async () => {
-    const data = await fs.readFile(`${__dirname}/home.json`, "utf8");
-
-    if(data) {
-
-        const result = {
-            data: JSON.parse(data),
-            error: false,
-        }
-           
-        return result;
-
-    } else {
-        const result = {
-            error: true,
-        }
-        return result;
-    }
-    
-};
   
-
 const readTweets = async () => {
 
     const result = await connection();

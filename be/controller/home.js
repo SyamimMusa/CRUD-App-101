@@ -7,9 +7,10 @@ const {
 
 const getTweets = async (req,res) => {
 
+    
+
     const response = await readTweets()
 
-   
     res.send(response);
 }
 
