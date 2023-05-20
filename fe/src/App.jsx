@@ -38,10 +38,15 @@ function App() {
   const createPostHandler = () => {
     createPost(newPost.user, newPost.tweet)
       .then((res) => {
+        console.log(res);
         refetch();
+        setNewPost({
+          user: "",
+          tweet: "",
+        });
       })
       .catch((err) => {
-        console.log(...err);
+        console.log("got err", ...err);
       });
   };
 
@@ -57,7 +62,7 @@ function App() {
     setIsLoading(true);
     getPostList()
       .then((res) => {
-        setData(res.data);
+        if (res.status === 200) setData(res.data);
       })
       .finally(() => {
         setIsLoading(false);

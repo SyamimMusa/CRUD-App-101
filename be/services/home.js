@@ -57,23 +57,35 @@ const createTweets = async (name, tweet) => {
     return response;
   } else {
     const { data } = result;
-    const postId = data[data.length - 1].postId + 1;
+    console.log("check data", data);
 
-    const newTweetObject = [
-      ...result.data,
-      {
-        postId,
+    const newTweetObject = [];
+
+    if (data.length) {
+      const newPostId = data[data.length - 1].postId + 1;
+      const lol = newTweetObject.concat([
+        ...result.data,
+        {
+          postId: newPostId,
+          name,
+          tweet,
+        },
+      ]);
+      newTweetObject.push(...lol);
+    } else {
+      newTweetObject.push({
+        postId: 1,
         name,
         tweet,
-      },
-    ];
+      });
+    }
 
     await fs.writeFile(
       `${__dirname}/home.json`,
       JSON.stringify(newTweetObject)
     );
 
-    response = `Created a post with id of ${postId}`;
+    response = `Post created`;
 
     return response;
   }
@@ -107,7 +119,7 @@ const removeTweets = async (postId) => {
   const { data } = result;
 
   const checkData = data.find((tweet) => tweet.postId === postId);
-  console.log(postId);
+
   if (checkData) {
     const newData = data.filter((tweet) => tweet.postId !== postId);
     await fs.writeFile(`${__dirname}/home.json`, JSON.stringify(newData));
