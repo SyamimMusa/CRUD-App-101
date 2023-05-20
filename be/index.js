@@ -1,4 +1,6 @@
 const express = require('express');
+var cors = require('cors');
+
 const app = express();
 
 app.listen(4000, () => {
@@ -11,6 +13,7 @@ app.get("/", (req,res) => {
 
 
 const homeRoute = require("./routes/home")
+app.use(cors());
 app.use("/home", homeRoute)
 
 
