@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { getList } from "./api/todo";
+import { getPostList, createPost, deletePost, updatePost } from "./api/todo";
 import uuid from "react-uuid";
 import "./App.css";
 
@@ -17,14 +17,28 @@ function App() {
   });
 
   const editPostHandler = () => {
-    console.log("edit data", postEditable);
+    updatePost(postEditable.id, postEditable.tweet).then((res) => {
+      if (res.status === 200) {
+        refetch();
+        setPostEditable({ ...postEditable, editable: false });
+      }
+    });
   };
+
   const deletePostHandler = (id) => {
-    console.log("delete", id);
+    deletePost(id).then((res) => console.log());
   };
 
   const createPostHandler = () => {
-    console.log("create");
+    createPost(newPost.user, newPost.tweet)
+      .then((res) => {
+        if (res.data) {
+          refetch();
+        }
+      })
+      .catch((err) => {
+        console.log(...err);
+      });
   };
 
   const setEditablePostHandler = (id, tweet) => {
@@ -37,8 +51,9 @@ function App() {
 
   const refetch = () => {
     setIsLoading(true);
-    getList()
+    getPostList()
       .then((res) => {
+        console.log(res);
         setData(res.data);
       })
       .finally(() => {
@@ -52,11 +67,11 @@ function App() {
 
   const renderData = () => {
     if (!data.length) {
-      return <div>No Data</div>;
+      return <div style={{ backgroundColor: "white" }}>No Data</div>;
     }
 
     if (isLoading) {
-      return <div>Loading...</div>;
+      return <div style={{ backgroundColor: "white" }}>Loading...</div>;
     }
 
     return (
@@ -100,6 +115,8 @@ function App() {
           </Fragment>
         ) : (
           <div key={uuid()}>
+            <div>{item.postId}</div>
+
             <div>{item.name ?? "Unknown"}</div>
             <div>{item.tweet ?? "Empty"}</div>
             <div className="action-wrapper">
@@ -170,7 +187,7 @@ function App() {
               >
                 Reset
               </button>
-              <button type="button" onClick={() => console.log("create")}>
+              <button type="button" onClick={() => createPostHandler()}>
                 Create Post
               </button>
             </div>

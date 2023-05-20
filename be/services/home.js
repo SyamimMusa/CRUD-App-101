@@ -1,148 +1,127 @@
 const { post } = require("../routes/home");
 
-const fs = require("fs").promises;  
+const fs = require("fs").promises;
 
 const connection = async () => {
-    const data = await fs.readFile(`${__dirname}/home.json`, "utf8");
+  const data = await fs.readFile(`${__dirname}/home.json`, "utf8");
 
-    if(data) {
+  if (data) {
+    const result = {
+      data: JSON.parse(data),
+      error: false,
+    };
 
-        const result = {
-            data: JSON.parse(data),
-            error: false,
-        }
-           
-        return result;
-
-    } else {
-        const result = {
-            error: true,
-        }
-        return result;
-    }
-    
+    return result;
+  } else {
+    const result = {
+      error: true,
+    };
+    return result;
+  }
 };
-  
 
 const readTweets = async () => {
+  const result = await connection();
 
-    const result = await connection();
+  const { data } = result;
 
-    const { data } = result;
-
-    return data;
-}
+  return data;
+};
 
 const createTweets = async (name, tweet) => {
+  let response;
 
-    let response;
+  const result = await connection();
 
-    const result = await connection();
+  console.log(result.error);
 
+  if (result.error) {
+    //Create a new data object (tweet)
+    const postId = 1;
 
+    const newTweetObject = [
+      {
+        postId,
+        name,
+        tweet,
+      },
+    ];
 
-    console.log(result.error);
+    await fs.writeFile(
+      `${__dirname}/home.json`,
+      JSON.stringify(newTweetObject)
+    );
 
-    if(result.error) {
-        //Create a new data object (tweet)
-        const postId = 1;
+    response = `Created a post with id of ${postId}`;
 
-        const newTweetObject = [
-            { 
-                postId,
-                name,
-                tweet,
-            }
-        ]
+    return response;
+  } else {
+    const { data } = result;
+    const postId = data[data.length - 1].postId + 1;
 
-        await fs.writeFile(`${__dirname}/home.json`, JSON.stringify(newTweetObject));
+    const newTweetObject = [
+      ...result.data,
+      {
+        postId,
+        name,
+        tweet,
+      },
+    ];
 
-        response = `Created a post with id of ${postId}`;
+    await fs.writeFile(
+      `${__dirname}/home.json`,
+      JSON.stringify(newTweetObject)
+    );
 
-        return response
+    response = `Created a post with id of ${postId}`;
 
-    } else {
-
-        const { data } = result;
-        const postId = (data[data.length - 1].postId) + 1;
-
-        const newTweetObject = [
-            ...result.data,
-            {
-            postId,
-            name,
-            tweet,
-            }
-        ]
-
-        await fs.writeFile(`${__dirname}/home.json`, JSON.stringify(newTweetObject));
-
-        response = `Created a post with id of ${postId}`;
-
-        return response
-    }
-}
-    
+    return response;
+  }
+};
 
 const putTweets = async (postId, newTweet) => {
+  let response;
 
-        let response;
+  const result = await connection();
 
-        const result = await connection();
+  const { data } = result;
 
-        const { data } = result;
+  let selectedTweet = data.find((tweet) => tweet.postId === postId);
 
-        let selectedTweet = data.find(tweet => tweet.postId === postId);
+  if (selectedTweet) {
+    selectedTweet.tweet = newTweet;
+    response = `Updated tweet with ID of ${postId}`;
+  } else {
+    response = `No tweet with ID ${postId} exists `;
+  }
 
-        if(selectedTweet) {
-            selectedTweet.tweet = newTweet
-            response = `Updated tweet with ID of ${postId}`
-        } else {
-            response = `No tweet with ID ${postId} exists `
-        }
+  await fs.writeFile(`${__dirname}/home.json`, JSON.stringify(data));
 
-
-        await fs.writeFile(`${__dirname}/home.json`, JSON.stringify(data));
-
-  
-        return response
-
-
-    
-}
+  return response;
+};
 const removeTweets = async (postId) => {
+  let response;
 
-    let response;
+  const result = await connection();
 
-    const result = await connection();
+  const { data } = result;
 
-    const { data } = result;
-
-
-    const checkData = data.find((tweet) => tweet.postId == postId)
-
-   
-
-    if(checkData) {
-        const newData = data.filter((tweet) => tweet.postId !== postId);
-        await fs.writeFile(`${__dirname}/home.json`, JSON.stringify(newData));
-        response = `Deleted tweet with ID of ${postId}`
-        return response;
-    } else {
-        response = `No tweet with ID ${postId} exists `
-        return response;
-    }
-
-    
-
-
-    
-}
+  const checkData = data.find((tweet) => tweet.postId === postId);
+  console.log(postId);
+  if (checkData) {
+    const newData = data.filter((tweet) => tweet.postId !== postId);
+    await fs.writeFile(`${__dirname}/home.json`, JSON.stringify(newData));
+    response = `Deleted tweet with ID of ${postId}`;
+    return response;
+  } else {
+    response = `No tweet with ID ${postId} exists `;
+    return response;
+  }
+};
 
 module.exports = {
-    readTweets,
-    createTweets,
-    putTweets,
-    removeTweets,
-  };
-  
+  readTweets,
+  createTweets,
+  putTweets,
+  removeTweets,
+};

@@ -1,6 +1,6 @@
-import axios from 'axios';
+import axios from "axios";
 
-const baseURL = 'http://localhost:4000/'
+const baseURL = "http://localhost:4000/home";
 
 const apiClient = axios.create({
   baseURL: baseURL,
@@ -10,11 +10,25 @@ const apiClient = axios.create({
   },
 });
 
-const getList = async () => {
-    const res = await apiClient.get('/home',{});
-    return res;
-}
+const getPostList = async () => {
+  const res = await apiClient.get("/", {});
+  return res;
+};
 
-export {
-    getList,
-}
+const createPost = async (name, tweet) => {
+  const res = await apiClient.post("/createTweet", { name, tweet });
+  return res;
+};
+
+const deletePost = async (postId) => {
+  const res = await apiClient.delete("/deleteTweet", { postId });
+  console.log(res, postId);
+  return res;
+};
+
+const updatePost = async (postId, newTweet) => {
+  const res = await apiClient.put("/updateTweet", { postId, newTweet });
+  return res;
+};
+
+export { getPostList, createPost, deletePost, updatePost };
