@@ -1,35 +1,47 @@
 #root {
   padding: 2rem;
-  width:100%;
+  width: 100%;
 }
 
-html, body {
+html,
+body {
   min-height: 100vh;
   min-width: 100vw;
+  background: linear-gradient(-45deg, #2b0101, #290946, #1f011c, #570210);
+  background-size: 200% 200%;
+  -webkit-animation: gradient 3s ease infinite;
+  animation: gradient 3s ease infinite;
 }
 
 .container {
-  display:flex;
+  display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   gap: 1.5rem;
-  width:100%;
+  width: 100%;
 }
 
 .container > * {
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;  width: 100%;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  width: 100%;
   padding: 1rem;
-  width:100%;
-  max-width:600px;
+  width: 100%;
+  max-width: 600px;
   border-radius: 8px;
-  position:relative;
+  position: relative;
+  background-color: white;
 }
 
 .action-wrapper {
-  display:flex;
+  display: flex;
   position: absolute;
   right: 10px;
   top: 10px;
   gap: 8px;
+}
+
+.textarea {
+  min-height: 150px;
 }

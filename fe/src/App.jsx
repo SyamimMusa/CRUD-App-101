@@ -6,7 +6,10 @@ import "./App.css";
 function App() {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [newPost, setNewPost] = useState("");
+  const [newPost, setNewPost] = useState({
+    user: "",
+    tweet: "",
+  });
   const [postEditable, setPostEditable] = useState({
     id: 0,
     editable: false,
@@ -14,18 +17,14 @@ function App() {
   });
 
   const editPostHandler = () => {
-    console.log("edit");
+    console.log("edit data", postEditable);
   };
-  const deletePostHandler = () => {
-    console.log("delete");
+  const deletePostHandler = (id) => {
+    console.log("delete", id);
   };
 
   const createPostHandler = () => {
     console.log("create");
-  };
-
-  const onConfirmEditPostHandler = () => {
-    console.log("edit");
   };
 
   const setEditablePostHandler = (id, tweet) => {
@@ -65,12 +64,12 @@ function App() {
       data.map((item) => {
         return postEditable.editable && postEditable.id === item.postId ? (
           <Fragment key={uuid()}>
-            <div style={{ display: "flex", width: "100%" }}>
+            <div style={{ display: "flex", width: "100%", gap: "3px" }}>
               <input
                 style={{ width: "100%" }}
                 type="text"
-                value={postEditable.tweet}
-                onChange={(e) => {
+                defaultValue={postEditable.tweet}
+                onBlur={(e) => {
                   setPostEditable({
                     ...postEditable,
                     tweet: e.target.value,
@@ -116,7 +115,7 @@ function App() {
               <button
                 type="button"
                 onClick={() => {
-                  deletePostHandler();
+                  deletePostHandler(item.postId);
                 }}
                 className="action-button"
               >
@@ -131,7 +130,54 @@ function App() {
 
   return (
     <div>
-      <div className="container">{renderData()}</div>
+      <div className="container">
+        <div style={{ backgroundColor: "white" }}>
+          <h3>CRUD React Webapp</h3>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "12px" }}
+          >
+            <input
+              type="text"
+              value={newPost.user}
+              placeholder="User"
+              onChange={(e) => {
+                setNewPost({ ...newPost, user: e.target.value });
+              }}
+            />
+            <textarea
+              className="textarea"
+              placeholder="Tweet"
+              value={newPost.tweet}
+              onChange={(e) => {
+                setNewPost({ ...newPost, tweet: e.target.value });
+              }}
+            ></textarea>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "8px",
+              }}
+            >
+              <button
+                type="button"
+                onClick={() =>
+                  setNewPost({
+                    user: "",
+                    tweet: "",
+                  })
+                }
+              >
+                Reset
+              </button>
+              <button type="button" onClick={() => console.log("create")}>
+                Create Post
+              </button>
+            </div>
+          </div>
+        </div>
+        {renderData()}
+      </div>
     </div>
   );
 }
