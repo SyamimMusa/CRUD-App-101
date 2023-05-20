@@ -26,15 +26,19 @@ function App() {
   };
 
   const deletePostHandler = (id) => {
-    deletePost(id).then((res) => console.log());
+    deletePost(id)
+      .then((res) => {
+        if (res.status === 200) {
+          refetch();
+        }
+      })
+      .catch((err) => console.log("err", err));
   };
 
   const createPostHandler = () => {
     createPost(newPost.user, newPost.tweet)
       .then((res) => {
-        if (res.data) {
-          refetch();
-        }
+        refetch();
       })
       .catch((err) => {
         console.log(...err);
@@ -53,7 +57,6 @@ function App() {
     setIsLoading(true);
     getPostList()
       .then((res) => {
-        console.log(res);
         setData(res.data);
       })
       .finally(() => {

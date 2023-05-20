@@ -21,8 +21,7 @@ const createPost = async (name, tweet) => {
 };
 
 const deletePost = async (postId) => {
-  const res = await apiClient.delete("/deleteTweet", { postId });
-  console.log(res, postId);
+  const res = await apiClient.delete("/deleteTweet", { data: { postId } });
   return res;
 };
 
