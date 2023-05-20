@@ -1,50 +1,42 @@
 const {
-    readTweets,
-    createTweets,
-    putTweets,
-    removeTweets,
-  } = require("../services/home");
+  readTweets,
+  createTweets,
+  putTweets,
+  removeTweets,
+} = require("../services/home");
 
-const getTweets = async (req,res) => {
+const getTweets = async (req, res) => {
+  const response = await readTweets();
 
-    
+  res.send(response);
+};
 
-    const response = await readTweets()
+const postTweets = async (req, res) => {
+  const { name, tweet } = req.body;
+  const response = await createTweets(name, tweet);
 
-    res.send(response);
-}
+  res.send(response);
+};
 
-const postTweets = async (req,res) => {
+const updateTweets = async (req, res) => {
+  const { newTweet, postId } = req.body;
 
-    const { name, tweet } = req.body;
-    const response = await createTweets(name,tweet);
-   
-    res.send(response);
-}
+  const response = await putTweets(postId, newTweet);
 
-const updateTweets = async (req,res) => {
+  res.send(response);
+};
 
-    const { newTweet, postId } = req.body;
+const deleteTWeets = async (req, res) => {
+  const { postId } = req.body;
 
-    const response = await putTweets(postId, newTweet);
+  const response = await removeTweets(postId);
 
-    res.send(response);
-}
-
-const deleteTWeets = async (req,res) => {
-;
-    const { postId } = req.body;
-
-    const response = await removeTweets(postId);
-
-    res.send(response);
-    
-}
+  res.send(response);
+};
 
 module.exports = {
-    getTweets,
-    postTweets,
-    updateTweets,
-    deleteTWeets,
-  };
-  
+  getTweets,
+  postTweets,
+  updateTweets,
+  deleteTWeets,
+};
